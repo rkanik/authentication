@@ -1,12 +1,9 @@
-
-//const passport = require('passport')
-
 /** Strategies */
-const LocalStategy = require('./strategies/passport-local')
+const strategies = require("./strategies/index.strategies")
 
 module.exports = passport => {
-
-   passport.use(LocalStategy)
+   passport.use(strategies.local)
+   passport.use(strategies.google)
 
    passport.serializeUser(function (user, done) {
       done(null, user.id);
@@ -17,5 +14,4 @@ module.exports = passport => {
          done(err, user);
       });
    });
-
 }

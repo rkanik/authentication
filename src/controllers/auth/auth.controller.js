@@ -48,3 +48,8 @@ exports.loginUser = async (username, password, done) => {
       done(true, null, "User not found!")
    }
 }
+
+exports.onGoogleSignin = async (token, rToken, profile, done) => {
+   console.log(token, profile)
+   return done(null, profile)
+}

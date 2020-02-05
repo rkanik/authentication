@@ -37,7 +37,9 @@ app
    .set('view engine', 'pug')
 
    /** static route */
-   .get("/", (_, res) => res.send("/index"))
+   .get("/", (req, res) => {
+      res.json({ msg: "Index" })
+   })
 
    /** routes */
    .use("/auth", router.auth)

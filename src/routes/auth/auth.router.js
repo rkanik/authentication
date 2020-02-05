@@ -20,4 +20,12 @@ router.post("/login", (req, res, next) => {
 
 router.post("/register", auth.createUser)
 
+router.get("/google", passport.authenticate('google'))
+router.get("/google/callback",
+   passport.authenticate('google', {
+      successRedirect: "/",
+      failureRedirect: "/auth/login"
+   })
+)
+
 module.exports = router
