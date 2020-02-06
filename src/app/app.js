@@ -7,6 +7,7 @@ const session = require('express-session')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const flash = require("connect-flash")
 
 /** import router */
 const router = require("../routes/indes.routes")
@@ -23,12 +24,23 @@ app
    .use(morgan('dev'))
    .use(cookieParser())
    .use(bodyParser.json())
+   .use(bodyParser.urlencoded({ extended: true }))
    .use(session({
       secret: process.env.SESSION_SECRET,
       saveUninitialized: true,
-      resave: false,
-      cookie: { secure: true }
+      resave: true,
+      cookie: { secure: false }
    }))
+
+   /** Flash */
+   .use(flash())
+   .use((req, res, next) => {
+      res.locals.success_msg = req.flash('success_msg');
+      res.locals.error_msg = req.flash('error_msg');
+      res.locals.error = req.flash('error');
+      next();
+   })
+
    // passport
    .use(passport.initialize())
    .use(passport.session())
@@ -36,12 +48,10 @@ app
    /** view engine */
    .set('view engine', 'pug')
 
-   /** static route */
-   .get("/", (req, res) => {
-      res.json({ msg: "Index" })
-   })
+   /** root routes */
+   .use("/", router.root)
 
-   /** routes */
+   /** other routes */
    .use("/auth", router.auth)
 
 /** app export */

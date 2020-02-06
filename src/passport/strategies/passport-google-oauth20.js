@@ -1,7 +1,7 @@
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 const { onGoogleSignin } = require("../../controllers/auth/auth.controller")
-const { google } = require("../providers")
+const { google } = require("../providers.passport")
 
 const googleConfig = {
    clientID: google.client_id,
@@ -11,4 +11,6 @@ const googleConfig = {
    scope: google.scopes
 }
 
-module.exports = new GoogleStrategy(googleConfig, onGoogleSignin)
+module.exports = new GoogleStrategy(googleConfig,
+   (accessToken, refreshToken, profile, done) => { onGoogleSignin(accessToken, refreshToken, profile, done) }
+)

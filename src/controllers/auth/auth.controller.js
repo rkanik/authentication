@@ -35,13 +35,8 @@ exports.createUser = async (req, res) => {
    }
 }
 
-exports.loginUser = async (username, password, done) => {
-   /** username should be like this
-    * {"$or":[{"userName":"rkanik"},{"email":"rkanik"}]} 
-    * {"$or":[{"userName":"rkanik773@gmail.com"},{"email":"rkanik773@gmail.com"}]}
-    */
-   let orCondition = JSON.parse(username)
-   let user = await User.findOne(orCondition).select("-__v")
+exports.loginUser = async (condition, password, done) => {
+   let user = await User.findOne(JSON.parse(condition)).select("-__v")
    if (user) {
       done(null, user)
    } else {
@@ -49,7 +44,36 @@ exports.loginUser = async (username, password, done) => {
    }
 }
 
-exports.onGoogleSignin = async (token, rToken, profile, done) => {
-   console.log(token, profile)
-   return done(null, profile)
+exports.onGoogleSignin = async (_, __, profile, done) => {
+   let existUser = await User.findOne({ email: profile._json.email }).select("-__v")
+   if (existUser) {
+      await User.updateOne({ _id: existUser._id }, { lastVisited: Date.now() })
+      done(null, existUser._doc, "User already exist!")
+   } else {
+      let user = new User({
+         name: profile.displayName,
+         userName: profile._json.email.split("@")[0].replace(/\./g, ""),
+         email: profile._json.email,
+         emailVerified: profile._json.email_verified,
+         externalId: profile.id,
+         provider: profile.provider,
+         thumbnail: profile._json.picture
+      })
+      let isError = user.validateSync()
+      if (!isError) {
+         await User.init()
+         user.save()
+            .then(newUser => {
+               console.log("User created successfully!")
+               done(null, newUser, "User created successfully!")
+            })
+            .catch(err => {
+               console.log(err.message)
+               done(true, null, err.message)
+            })
+      } else {
+         console.log("User validation error!")
+         done(true, null, "User validation error!")
+      }
+   }
 }
