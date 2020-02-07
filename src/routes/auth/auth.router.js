@@ -1,4 +1,3 @@
-
 const router = require('express').Router()
 const passport = require('passport')
 const { auth } = require('../../controllers')
@@ -22,27 +21,15 @@ router.post('/login', (req, res, next) => {
 
 router.post("/register", auth.createUser)
 
-router.get("/google", passport.authenticate('google'))
-router.get("/google/callback", passport.authenticate('google', {
-   successRedirect: "/profile",
-   failureRedirect: "/auth/login"
-}))
-
-router.get('/facebook', passport.authenticate('facebook'));
-router.get('/facebook/callback',
-   passport.authenticate('facebook', { failureRedirect: '/auth/login' }),
-   function (req, res) {
-      // Successful authentication, redirect home.
-      res.redirect('/');
-   });
-
-router.get("/github", passport.authenticate('github', { scope: ['user:email'] }))
-router.get("/github/callback",
-   passport.authenticate('github', { failureRedirect: '/auth/login' }),
-   function (req, res) {
-      // Successful authentication, redirect home.
-      res.redirect('/profile');
-   }
-)
+const providers = ["google", "facebook", "github", "linkedin"]
+providers.forEach(provider => {
+   router.get(`/${provider}`, passport.authenticate(provider))
+   router.get(`/${provider}/callback`,
+      passport.authenticate(provider, {
+         failureRedirect: "/auth/login",
+         successRedirect: '/profile'
+      }),
+   )
+})
 
 module.exports = router

@@ -45,35 +45,82 @@ exports.loginUser = async (condition, password, done) => {
 }
 
 exports.onGoogleSignin = async (_, __, profile, done) => {
+
    let existUser = await User.findOne({ email: profile._json.email }).select("-__v")
+
    if (existUser) {
       await User.updateOne({ _id: existUser._id }, { lastVisited: Date.now() })
-      done(null, existUser._doc, "User already exist!")
-   } else {
-      let user = new User({
-         name: profile.displayName,
-         userName: profile._json.email.split("@")[0].replace(/\./g, ""),
-         email: profile._json.email,
-         emailVerified: profile._json.email_verified,
-         externalId: profile.id,
-         provider: profile.provider,
-         thumbnail: profile._json.picture
-      })
-      let isError = user.validateSync()
-      if (!isError) {
-         await User.init()
-         user.save()
-            .then(newUser => {
-               console.log("User created successfully!")
-               done(null, newUser, "User created successfully!")
-            })
-            .catch(err => {
-               console.log(err.message)
-               done(true, null, err.message)
-            })
-      } else {
-         console.log("User validation error!")
-         done(true, null, "User validation error!")
-      }
+      return done(null, existUser._doc, "User already exist!")
    }
+
+   let user = new User({
+      name: profile.displayName,
+      userName: profile._json.email.split("@")[0].replace(/\./g, ""),
+      email: profile._json.email,
+      emailVerified: profile._json.email_verified,
+      externalId: profile.id,
+      provider: profile.provider,
+      thumbnail: profile._json.picture
+   })
+
+   let isError = user.validateSync()
+   if (isError !== undefined) { return done(true, null, "User validation error!") }
+
+   await User.init()
+
+   user.save()
+      .then(newUser => {
+         console.log("User created successfully!")
+         done(null, newUser, "User created successfully!")
+      })
+      .catch(err => {
+         console.log(err.message)
+         done(true, null, err.message)
+      })
+}
+
+exports.onFacebookSignin = async (_, __, profile, done) => {
+   console.log(profile)
+   let user = new User(profile)
+   done(null, { ...user._doc })
+}
+
+exports.onGithubSignin = async (_, __, profile, done) => {
+
+   console.log(profile)
+
+   let existUser = await User.findOne({ email: profile._json.email }).select("-__v")
+
+   //console.log(existUser)
+   return done(null, profile )
+
+   if (existUser) {
+      await User.updateOne({ _id: existUser._id }, { lastVisited: Date.now() })
+      return done(null, existUser._doc, "User already exist!")
+   }
+
+   let user = new User({
+      name: profile.displayName,
+      userName: profile._json.email.split("@")[0].replace(/\./g, ""),
+      email: profile._json.email,
+      emailVerified: profile._json.email_verified,
+      externalId: profile.id,
+      provider: profile.provider,
+      thumbnail: profile._json.picture
+   })
+
+   let isError = user.validateSync()
+   if (isError !== undefined) { return done(true, null, "User validation error!") }
+
+   await User.init()
+
+   user.save()
+      .then(newUser => {
+         console.log("User created successfully!")
+         done(null, newUser, "User created successfully!")
+      })
+      .catch(err => {
+         console.log(err.message)
+         done(true, null, err.message)
+      })
 }

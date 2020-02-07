@@ -11,6 +11,4 @@ const googleConfig = {
    scope: google.scopes
 }
 
-module.exports = new GoogleStrategy(googleConfig,
-   (accessToken, refreshToken, profile, done) => { onGoogleSignin(accessToken, refreshToken, profile, done) }
-)
+module.exports = new GoogleStrategy(googleConfig, onGoogleSignin)
