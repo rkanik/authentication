@@ -2,7 +2,7 @@
 const strategies = require("./strategies/index.strategies")
 const User = require("../models/user.model")
 
-const { linkedIn } = require("./strategies.passport")
+const { linkedIn, outlook } = require("./strategies.passport")
 
 module.exports = passport => {
 
@@ -11,6 +11,7 @@ module.exports = passport => {
    passport.use(strategies.facebook)
    passport.use(strategies.github)
    passport.use(linkedIn)
+   passport.use('outlook', outlook)
 
    passport.serializeUser((user, done) => {
       done(null, user._id);

@@ -21,7 +21,7 @@ router.post('/login', (req, res, next) => {
 
 router.post("/register", auth.createUser)
 
-const providers = ["google", "facebook", "github", "linkedin"]
+const providers = ["google", "facebook", "github", "linkedin", "outlook"]
 providers.forEach(provider => {
    router.get(`/${provider}`, passport.authenticate(provider))
    router.get(`/${provider}/callback`,

@@ -87,12 +87,12 @@ exports.onFacebookSignin = async (_, __, profile, done) => {
 
 exports.onGithubSignin = async (_, __, profile, done) => {
 
-   console.log(profile)
+   console.log("profile => ", profile)
 
    let existUser = await User.findOne({ email: profile._json.email }).select("-__v")
 
-   //console.log(existUser)
-   return done(null, profile )
+   console.log("existUser => ", existUser)
+   return done(null, profile)
 
    if (existUser) {
       await User.updateOne({ _id: existUser._id }, { lastVisited: Date.now() })

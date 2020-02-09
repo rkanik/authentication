@@ -46,3 +46,16 @@ exports.linkedin = {
    callbackURL: "https://localhost:3876/auth/linkedin/callback",
    scope: ['r_emailaddress', 'r_liteprofile', "w_member_social"]
 }
+
+exports.outlook = {
+   clientID: process.env.OUTLOOK_CLIENT_ID,
+   clientSecret: process.env.OUTLOOK_CLIENT_SECRET,
+   callbackURL: "https://localhost:3876/auth/outlook/callback",
+   authorizationURL: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+   scope: [
+      'openid',
+      'profile',
+      'offline_access'
+   ],
+   passReqToCallback: true
+}
