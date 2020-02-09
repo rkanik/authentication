@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+html(lang="en")
+   head
+      meta(charset="UTF-8")
+      meta(name="viewport" content="width=device-width, initial-scale=1.0")
+      meta(http-equiv="X-UA-Compatible" content="ie=edge")
+      link(rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css")
+      link(rel="stylesheet" href="https://bootswatch.com/4/journal/bootstrap.min.css")
+      title Login | Authentication
+   body
+      .container.mt-4
+         form(method='POST' action='/auth/login')
+            .form-group
+               label(for="email") Email
+               input( type="email" id="email" name="username" class="form-control" placeholder="Enter Email")
+            .form-group
+               label(for="password") Password
+               input(type="password" id="password" name="password" class="form-control" placeholder="Enter Password")
+            button.btn.btn-primary.btn-block(type="submit") Login
