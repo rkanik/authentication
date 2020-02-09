@@ -1,0 +1,7 @@
+node_modules
+data
+
+# SERVER KEY
+server.key
+server.cert
+config.bat
