@@ -1,7 +1,7 @@
 node_modules
 data
-.env
 
 # SERVER KEY
 server.key
 server.cert
+config.bat
