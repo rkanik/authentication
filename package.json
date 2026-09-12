@@ -32,7 +32,7 @@
       "passport-outlook2": "^1.0.1",
       "passport-twitter": "^1.0.4",
       "pug": "^2.0.4",
-      "uuid": "^3.4.0"
+      "uuid": "^14.0.0"
    },
    "devDependencies": {
       "nodemon": "^2.0.2"
